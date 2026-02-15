@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.5rem;
+        --background: 0.98 0 0;
+        --foreground: 0.145 0 0;
+        --card: 1 0 0;
+        --card-foreground: 0.145 0 0;
+        --popover: 1 0 0;
+        --popover-foreground: 0.145 0 0;
+        --primary: 0.45 0.15 250;
+        --primary-foreground: 0.985 0 0;
+        --secondary: 0.96 0 0;
+        --secondary-foreground: 0.205 0 0;
+        --muted: 0.96 0 0;
+        --muted-foreground: 0.5 0 0;
+        --accent: 0.96 0 0;
+        --accent-foreground: 0.205 0 0;
+        --destructive: 0.577 0.245 27.325;
+        --destructive-foreground: 0.985 0 0;
+        --border: 0.9 0 0;
+        --input: 0.9 0 0;
+        --ring: 0.45 0.15 250;
+        --chart-1: 0.646 0.222 41.116;
+        --chart-2: 0.6 0.118 184.704;
+        --chart-3: 0.398 0.07 227.392;
+        --chart-4: 0.828 0.189 84.429;
+        --chart-5: 0.769 0.188 70.08;
+    }
+
+    .dark {
+        --background: 0.12 0 0;
+        --foreground: 0.985 0 0;
+        --card: 0.18 0 0;
+        --card-foreground: 0.985 0 0;
+        --popover: 0.18 0 0;
+        --popover-foreground: 0.985 0 0;
+        --primary: 0.55 0.18 250;
+        --primary-foreground: 0.985 0 0;
+        --secondary: 0.25 0 0;
+        --secondary-foreground: 0.985 0 0;
+        --muted: 0.25 0 0;
+        --muted-foreground: 0.65 0 0;
+        --accent: 0.3 0 0;
+        --accent-foreground: 0.985 0 0;
+        --destructive: 0.65 0.22 27.325;
+        --destructive-foreground: 0.985 0 0;
+        --border: 0.3 0 0;
+        --input: 0.3 0 0;
+        --ring: 0.55 0.18 250;
+        --chart-1: 0.488 0.243 264.376;
+        --chart-2: 0.696 0.17 162.48;
+        --chart-3: 0.769 0.188 70.08;
+        --chart-4: 0.627 0.265 303.9;
+        --chart-5: 0.645 0.246 16.439;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+        font-family: 'Inter', 'Calibri', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+}
+
+@layer utilities {
+    .transition-smooth {
+        transition: all 0.2s ease-in-out;
+    }
+}
+
+/* Print Styles */
+@media print {
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
+
+    body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .print\\:hidden {
+        display: none !important;
+    }
+
+    header {
+        position: static !important;
+        box-shadow: none !important;
+    }
+
+    footer {
+        position: static !important;
+        margin-top: 2rem !important;
+    }
+
+    table {
+        page-break-inside: auto;
+    }
+
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tfoot {
+        display: table-footer-group;
+    }
+
+    .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+
+    /* Hide interactive elements in print */
+    button:not(.print\\:block),
+    input[type="search"],
+    select {
+        display: none !important;
+    }
+
+    /* Ensure table is readable */
+    table {
+        font-size: 9pt;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 4px 6px !important;
+        border: 1px solid #ddd !important;
+    }
+
+    /* Show passwords in print */
+    .password-hidden {
+        display: none;
+    }
+
+    /* Adjust badge sizes for print */
+    .badge {
+        font-size: 7pt;
+        padding: 1px 4px;
+    }
+}
+
+/* Table Styles */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+tbody tr:hover {
+    background-color: oklch(var(--muted) / 0.3);
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: oklch(var(--muted));
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: oklch(var(--muted-foreground) / 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: oklch(var(--muted-foreground) / 0.5);
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}

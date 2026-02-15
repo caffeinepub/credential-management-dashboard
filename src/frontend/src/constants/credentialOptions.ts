@@ -1,0 +1,46 @@
+export const RANGES_OPTIONS = [
+  'SV & ACB Hqrs',
+  'Ambala',
+  'Faridabad',
+  'Gurugram',
+  'Hisar',
+  'Karnal',
+  'Panchkula',
+  'Rohtak',
+] as const;
+
+export const BRANCH_OPTIONS = [
+  'IT Cell',
+  'Establishment Branch',
+  'Complaint Branch',
+  'Secret branch',
+  'Account Branch',
+  'Addl. Director General of Police',
+  'Care Taker',
+  'DSO Complaint',
+  'Cyber Cell',
+  'Diary Dispatch',
+  'Director General of Police',
+  'Enquiry Branch',
+  'Inspector General of Police',
+  'Legal Branch',
+  'MTO',
+  'CRC',
+  'Supdt. of Police',
+  'Technical Branch',
+  'Deputy Inspector General of Police',
+  'Sanction Officer',
+  'Toll Free',
+  'Other',
+] as const;
+
+export const CATEGORY_OPTIONS = [
+  'System Access',
+  'Email Account',
+  'Database',
+  'Network Device',
+  'Application',
+  'Cloud Service',
+  'VPN',
+  'Other',
+] as const;

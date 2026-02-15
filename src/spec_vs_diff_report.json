@@ -1,0 +1,120 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-15T15:07:19.537Z",
+  "summary": "Diff adds a React+TS dashboard shell with sticky header/footer, search, filters, table UI with password masking/toggles and copy buttons, a modal form for add/edit, delete confirmation, pagination controls, dark-mode toggle via next-themes, and a basic print button (window.print). It also adds an empty Motoko backend actor plus actor/Internet Identity hook plumbing. Several BuildRequest requirements cannot be fully verified from the truncated diff, and some implemented auth/actor features were not requested.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "App name “Credential Management Dashboard” is visible in the UI and used in page metadata.",
+      "reason": "Header/title shown in provided files uses the long office header text and the main page title is “Credential Management System”. No evidence of showing “Credential Management Dashboard” anywhere or setting page metadata (e.g., document title/meta tags/manifest).",
+      "evidence": [
+        "frontend/src/components/layout/StickyHeader.tsx",
+        "frontend/src/components/dashboard/PageTitleBlock.tsx",
+        "frontend/src/App.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "requirement": "Add/Edit Credential form includes all specified fields (Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks) and supports create + edit with prefilled values.",
+      "reason": "Form file is truncated; while initial state includes all fields and prefill logic exists, the diff excerpt does not show the full rendered form (notably fields beyond designation are not visible in the snippet), so full field coverage and wiring cannot be confirmed from evidence provided.",
+      "evidence": [
+        "frontend/src/components/credentials/CredentialFormModal.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "requirement": "Pagination must work with search and filters and reset to page 1 when criteria changes.",
+      "reason": "Filtering hook is shown, and pagination controls exist, but the pagination hook implementation and any logic that resets currentPage to 1 on search/filter change are not included in the diff summary; cannot verify required behavior.",
+      "evidence": [
+        "frontend/src/hooks/useCredentialFiltering.ts",
+        "frontend/src/components/credentials/PaginationControls.tsx",
+        "frontend/src/App.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "requirement": "Persist credential records locally in LocalStorage with safe handling for corrupt/invalid saved data.",
+      "reason": "The storage/persistence logic would likely be in useCredentials, but that hook’s implementation is not present in the diff summary; therefore LocalStorage persistence and corrupt-data fallback cannot be verified.",
+      "evidence": [
+        "frontend/src/App.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "requirement": "Persist dark mode preference locally.",
+      "reason": "Theme toggle uses next-themes, but there is no shown ThemeProvider configuration or explicit persistence handling; persistence cannot be confirmed from the provided excerpts.",
+      "evidence": [
+        "frontend/src/App.tsx (truncated)",
+        "frontend/src/components/layout/ThemeToggle.tsx"
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "requirement": "Print layout: clean professional print view including header text + “Credential Management System” title/subtitle and a table of currently visible filtered/searched records, formatted for multi-page A4/Letter without clipped columns.",
+      "reason": "Only a Print button calling window.print() is shown. No dedicated print stylesheet/layout rules ensuring column wrapping/non-clipping, multi-page formatting, or explicit inclusion/formatting of required header/title in print output are evidenced (beyond a few print:hidden/print:relative utility classes). Also PrintButton accepts data but does not use it, so printing the current filtered dataset is indirect and not explicitly implemented.",
+      "evidence": [
+        "frontend/src/components/print/PrintButton.tsx",
+        "frontend/src/components/layout/StickyHeader.tsx",
+        "frontend/src/components/layout/FixedFooter.tsx",
+        "frontend/src/components/credentials/CredentialTable.tsx (truncated)",
+        "frontend/src/App.tsx (truncated)"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Internet Identity / authenticated actor plumbing (useActor depending on useInternetIdentity) and backend actor creation flow.",
+      "reason": "BuildRequest explicitly says no authentication is requested (“only Internet Identity is allowed if authentication is later added”), and no backend functionality was required. Adding II/actor hooks and backend integration is beyond the requested scope.",
+      "evidence": [
+        "frontend/src/hooks/useActor.ts",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "description": "Introduction of a Motoko backend canister (empty actor).",
+      "reason": "No backend functionality was requested; requirement set is entirely frontend + LocalStorage persistence. Adding a backend actor (even empty) is not requested.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "confidence": 0.66,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/public/manifest.webmanifest",
+    "frontend/src/App.tsx",
+    "frontend/src/components/credentials/BadgeMultiSelect.tsx",
+    "frontend/src/components/credentials/CopyButton.tsx",
+    "frontend/src/components/credentials/CredentialFilters.tsx",
+    "frontend/src/components/credentials/CredentialFormModal.tsx",
+    "frontend/src/components/credentials/CredentialSearchBar.tsx",
+    "frontend/src/components/credentials/CredentialTable.tsx",
+    "frontend/src/components/credentials/DeleteCredentialConfirm.tsx",
+    "frontend/src/components/credentials/EmptyState.tsx",
+    "frontend/src/components/credentials/PaginationControls.tsx",
+    "frontend/src/components/credentials/PasswordCell.tsx",
+    "frontend/src/components/dashboard/PageTitleBlock.tsx",
+    "frontend/src/components/layout/FixedFooter.tsx",
+    "frontend/src/components/layout/StickyHeader.tsx",
+    "frontend/src/components/layout/ThemeToggle.tsx",
+    "frontend/src/components/print/PrintButton.tsx",
+    "frontend/src/constants/credentialOptions.ts",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useCredentialFiltering.ts",
+    "frontend/src/hooks/useCredentials.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/usePagination.ts",
+    "frontend/src/hooks/useTheme.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/storage/credentialsStorage.ts",
+    "frontend/src/types/credentials.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

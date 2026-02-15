@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Android mobile app \"Credential Management Dashboard\" for Government/Enterprise credential record management (1000+ entries) with modern admin-dashboard UI, searchable/filterable credential table, add/edit/delete, masking/copy tools, local persistence, dark mode, pagination, and print support.",
+  "architectural_notes": [
+    "Target dataset size 1000+ rows; optimize list/table rendering and search/filter performance.",
+    "Persist credential data locally on-device (user requested LocalStorage-style saving)."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-build-a-responsive-mobile-first-dashboard-web-app-named-credential-management-dashboard-installable-on-android-via-browser-as-a-pwa-style-experience-for-storing-and-managing-1000-credential-records-with-an-ultra-modern-government-enterprise-admin-dashboard-layout",
+      "title": "Build a responsive, mobile-first dashboard web app named “Credential Management Dashboard” (installable on Android via browser as a PWA-style experience) for storing and managing 1000+ credential records, with an ultra-modern Government/Enterprise admin-dashboard layout.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-overall-visual-theme-light-background-white-content-cards-subtle-shadows-soft-card-container-styling-smooth-ui-animations-and-modern-sans-serif-fonts-prefer-inter-with-fallbacks-to-calibri-segoe-ui-maintain-a-consistent-professional-government-enterprise-look-across-all-screens-and-states",
+      "title": "Implement the overall visual theme: light background, white content cards, subtle shadows, soft card container styling, smooth UI animations, and modern sans-serif fonts (prefer Inter with fallbacks to Calibri/Segoe UI). Maintain a consistent, professional Government/Enterprise look across all screens and states.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-fixed-sticky-header-containing-1-a-left-aligned-logo-placeholder-and-2-centered-header-text-exactly-office-of-the-director-general-state-vigilance-anti-corruption-bureau-haryana-panchkula-below-within-the-main-content-area-show-main-title-credential-management-system-and-subtitle-user-login-details",
+      "title": "Create a fixed sticky header containing (1) a left-aligned logo placeholder and (2) centered header text exactly: “Office of the Director General – State Vigilance & Anti-Corruption Bureau, Haryana – Panchkula”. Below/within the main content area, show main title “Credential Management System” and subtitle “User Login Details”.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-fixed-footer-that-remains-visible-at-the-bottom-of-the-viewport-displaying-exactly-confidential-for-official-use-only",
+      "title": "Add a fixed footer that remains visible at the bottom of the viewport displaying exactly: “Confidential – For Official Use Only”.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-credential-data-model-and-crud-ui-users-can-add-edit-and-delete-credential-records-provide-a-floating-add-credential-form-modal-drawer-containing-fields-category-name-designation-ranges-branch-login-id-password-mobile-email-url-remarks-password-input-is-masked-by-default-and-includes-an-eye-toggle-to-show-hide",
+      "title": "Implement credential data model and CRUD UI: users can add, edit, and delete credential records. Provide a floating “Add Credential” form (modal/drawer) containing fields: Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks. Password input is masked by default and includes an eye toggle to show/hide.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-render-the-credential-list-as-a-responsive-scrollable-table-capable-of-handling-1000-rows-with-good-performance-include-a-sticky-table-header-zebra-striping-row-hover-highlight-where-hover-exists-and-horizontal-scrolling-on-small-screens-table-columns-must-be-sr-no-category-name-designation-ranges-branch-login-id-password-mobile-email-url-remarks",
+      "title": "Render the credential list as a responsive, scrollable table capable of handling 1000+ rows with good performance. Include a sticky table header, zebra striping, row hover highlight (where hover exists), and horizontal scrolling on small screens. Table columns must be: Sr No, Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-ranges-and-branch-values-as-badge-style-pills-in-both-the-table-and-in-the-add-edit-form-selection-ui-ranges-options-must-be-exactly-sv-acb-hqrs-ambala-faridabad-gurugram-hisar-karnal-panchkula-rohtak-branch-options-must-be-exactly-it-cell-establishment-branch-complaint-branch-secret-branch-account-branch-addl-director-general-of-police-care-taker-dso-complaint-cyber-cell-diary-dispatch-director-general-of-police-enquiry-branch-inspector-general-of-police-legal-branch-mto-crc-supdt-of-police-technical-branch-deputy-inspector-general-of-police-sanction-officer-toll-free-other",
+      "title": "Display Ranges and Branch values as badge-style pills in both the table and in the add/edit form selection UI. Ranges options must be exactly: SV & ACB Hqrs, Ambala, Faridabad, Gurugram, Hisar, Karnal, Panchkula, Rohtak. Branch options must be exactly: IT Cell, Establishment Branch, Complaint Branch, Secret branch, Account Branch, Addl. Director General of Police, Care Taker, DSO Complaint, Cyber Cell, Diary Dispatch, Director General of Police, Enquiry Branch, Inspector General of Police, Legal Branch, MTO, CRC, Supdt. of Police, Technical Branch, Deputy Inspector General of Police, Sanction Officer, Toll Free, Other.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-global-live-search-rounded-pill-input-that-filters-visible-rows-by-matching-across-key-fields-at-minimum-category-name-designation-ranges-branch-login-id-mobile-email-url-remarks",
+      "title": "Add global live search (rounded pill input) that filters visible rows by matching across key fields (at minimum: Category, Name, Designation, Ranges, Branch, Login ID, Mobile, Email/URL, Remarks).",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-dropdown-filters-for-branch-ranges-and-category-each-with-an-adjacent-clear-control-plus-a-global-clear-filters-button-that-resets-search-all-filters-filters-must-work-together-and-behavior-and-update-the-visible-rows-and-pagination",
+      "title": "Add dropdown filters for Branch, Ranges, and Category, each with an adjacent “Clear” control, plus a global “Clear Filters” button that resets search + all filters. Filters must work together (AND behavior) and update the visible rows and pagination.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-table-mask-passwords-by-default-and-provide-per-row-password-show-hide-toggle-provide-copy-to-clipboard-buttons-for-login-id-and-password-per-row-with-clear-success-feedback-in-the-ui",
+      "title": "In the table, mask passwords by default and provide per-row password show/hide toggle. Provide copy-to-clipboard buttons for Login ID and Password per row, with clear success feedback in the UI.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-row-level-edit-and-delete-icons-actions-in-the-table-and-implement-pagination-controls-suitable-for-1000-entries-page-size-selector-optional-pagination-must-work-with-search-and-filters",
+      "title": "Add row-level edit and delete icons/actions in the table, and implement pagination controls suitable for 1000+ entries (page size selector optional). Pagination must work with search and filters.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-persist-credential-records-locally-in-the-browser-using-localstorage-so-that-records-remain-after-refresh-reopen-include-safe-handling-for-corrupt-invalid-saved-data-fallback-to-empty-state-rather-than-crashing",
+      "title": "Persist credential records locally in the browser using LocalStorage so that records remain after refresh/reopen. Include safe handling for corrupt/invalid saved data (fallback to empty state rather than crashing).",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-dark-mode-toggle-that-switches-the-dashboard-theme-between-light-and-dark-while-keeping-the-same-layout-and-usability-including-table-readability-and-badge-contrast-persist-the-theme-preference-locally",
+      "title": "Add a dark mode toggle that switches the dashboard theme between light and dark while keeping the same layout and usability (including table readability and badge contrast). Persist the theme preference locally.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-print-option-that-prints-credential-data-in-a-clean-professional-print-layout-the-print-output-must-include-the-header-text-the-credential-management-system-title-subtitle-and-a-table-of-the-currently-visible-filtered-searched-records-formatted-for-a4-letter-without-clipped-columns-allow-multi-page-printing",
+      "title": "Implement a print option that prints credential data in a clean, professional print layout. The print output must include the header text, the “Credential Management System” title/subtitle, and a table of the currently visible (filtered/searched) records, formatted for A4/Letter without clipped columns (allow multi-page printing).",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create Android app \"Credential Management Dashboard\" with Gov/Enterprise admin-dashboard UI (light theme, white cards, subtle shadows, smooth animations, modern fonts) including sticky header with logo placeholder + bureau text, titles, and fixed confidentiality footer",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Credential list table supporting 1000+ rows: responsive scrollable table with specified columns, sticky table header, zebra striping, row hover highlight, horizontal scrolling on mobile, and pagination",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Global live search and dropdown filters (Branch, Ranges, Category) with clear-filters buttons; show Ranges/Branch as badges",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Credential security & utilities: password masked by default with eye toggle, copy Login ID & Password buttons",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "CRUD: floating Add Credential form with fields Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks; row edit/delete icons",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Local persistence and performance optimization for large datasets (1000+ entries)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Dark mode toggle",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Print option for credential data",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Credential Management Dashboard",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

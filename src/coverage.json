@@ -1,0 +1,361 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-15T15:07:19.541Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 14,
+    "implemented": 14,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Build a responsive, mobile-first dashboard web app named “Credential Management Dashboard” (installable on Android via browser as a PWA-style experience) for storing and managing 1000+ credential records, with an ultra-modern Government/Enterprise admin-dashboard layout.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/index.html",
+          "frontend/public/manifest.webmanifest",
+          "frontend/public/sw.js",
+          "frontend/src/main.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/index.html",
+          "frontend/public/manifest.webmanifest",
+          "frontend/src/main.tsx"
+        ]
+      },
+      {
+        "id": "REQ-10",
+        "summary": "In the table, mask passwords by default and provide per-row password show/hide toggle. Provide copy-to-clipboard buttons for Login ID and Password per row, with clear success feedback in the UI.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/credentials/PasswordCell.tsx",
+          "frontend/src/components/feedback/ToastProvider.tsx",
+          "frontend/src/utils/clipboard.ts",
+          "frontend/src/components/credentials/CredentialTable.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/credentials/PasswordCell.tsx",
+          "frontend/src/components/credentials/CredentialTable.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-11",
+        "summary": "Add row-level edit and delete icons/actions in the table, and implement pagination controls suitable for 1000+ entries (page size selector optional). Pagination must work with search and filters.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/credentials/PaginationControls.tsx",
+          "frontend/src/hooks/usePagination.ts",
+          "frontend/src/components/credentials/CredentialTable.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/credentials/PaginationControls.tsx",
+          "frontend/src/hooks/usePagination.ts",
+          "frontend/src/components/credentials/CredentialTable.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-12",
+        "summary": "Persist credential records locally in the browser using LocalStorage so that records remain after refresh/reopen. Include safe handling for corrupt/invalid saved data (fallback to empty state rather than crashing).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/storage/credentialsStorage.ts",
+          "frontend/src/hooks/useCredentials.ts",
+          "frontend/src/components/credentials/EmptyState.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/storage/credentialsStorage.ts",
+          "frontend/src/hooks/useCredentials.ts",
+          "frontend/src/components/credentials/EmptyState.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-13",
+        "summary": "Add a dark mode toggle that switches the dashboard theme between light and dark while keeping the same layout and usability (including table readability and badge contrast). Persist the theme preference locally.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useTheme.ts",
+          "frontend/src/components/layout/ThemeToggle.tsx",
+          "frontend/src/components/layout/StickyHeader.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useTheme.ts",
+          "frontend/src/components/layout/ThemeToggle.tsx",
+          "frontend/src/components/layout/StickyHeader.tsx",
+          "frontend/src/index.css"
+        ]
+      },
+      {
+        "id": "REQ-14",
+        "summary": "Implement a print option that prints credential data in a clean, professional print layout. The print output must include the header text, the “Credential Management System” title/subtitle, and a table of the currently visible (filtered/searched) records, formatted for A4/Letter without clipped columns (allow multi-page printing).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/print/PrintButton.tsx",
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/print/PrintButton.tsx",
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Implement the overall visual theme: light background, white content cards, subtle shadows, soft card container styling, smooth UI animations, and modern sans-serif fonts (prefer Inter with fallbacks to Calibri/Segoe UI). Maintain a consistent, professional Government/Enterprise look across all screens and states.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/layout/DashboardLayout.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Create a fixed sticky header containing (1) a left-aligned logo placeholder and (2) centered header text exactly: “Office of the Director General – State Vigilance & Anti-Corruption Bureau, Haryana – Panchkula”. Below/within the main content area, show main title “Credential Management System” and subtitle “User Login Details”.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/layout/StickyHeader.tsx",
+          "frontend/src/components/dashboard/PageTitleBlock.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/layout/StickyHeader.tsx",
+          "frontend/src/components/dashboard/PageTitleBlock.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Add a fixed footer that remains visible at the bottom of the viewport displaying exactly: “Confidential – For Official Use Only”.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/layout/FixedFooter.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/layout/FixedFooter.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Implement credential data model and CRUD UI: users can add, edit, and delete credential records. Provide a floating “Add Credential” form (modal/drawer) containing fields: Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks. Password input is masked by default and includes an eye toggle to show/hide.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/types/credentials.ts",
+          "frontend/src/components/credentials/CredentialFormModal.tsx",
+          "frontend/src/components/credentials/DeleteCredentialConfirm.tsx",
+          "frontend/src/hooks/useCredentials.ts",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/types/credentials.ts",
+          "frontend/src/components/credentials/CredentialFormModal.tsx",
+          "frontend/src/components/credentials/DeleteCredentialConfirm.tsx",
+          "frontend/src/hooks/useCredentials.ts",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Render the credential list as a responsive, scrollable table capable of handling 1000+ rows with good performance. Include a sticky table header, zebra striping, row hover highlight (where hover exists), and horizontal scrolling on small screens. Table columns must be: Sr No, Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/credentials/CredentialTable.tsx",
+          "frontend/src/components/credentials/CredentialTableRowActions.tsx",
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/credentials/CredentialTable.tsx",
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Display Ranges and Branch values as badge-style pills in both the table and in the add/edit form selection UI. Ranges options must be exactly: SV & ACB Hqrs, Ambala, Faridabad, Gurugram, Hisar, Karnal, Panchkula, Rohtak. Branch options must be exactly: IT Cell, Establishment Branch, Complaint Branch, Secret branch, Account Branch, Addl. Director General of Police, Care Taker, DSO Complaint, Cyber Cell, Diary Dispatch, Director General of Police, Enquiry Branch, Inspector General of Police, Legal Branch, MTO, CRC, Supdt. of Police, Technical Branch, Deputy Inspector General of Police, Sanction Officer, Toll Free, Other.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/constants/credentialOptions.ts",
+          "frontend/src/components/credentials/BadgeMultiSelect.tsx",
+          "frontend/src/components/credentials/CredentialFormModal.tsx",
+          "frontend/src/components/credentials/CredentialTable.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/constants/credentialOptions.ts",
+          "frontend/src/components/credentials/BadgeMultiSelect.tsx",
+          "frontend/src/components/credentials/CredentialFormModal.tsx",
+          "frontend/src/components/credentials/CredentialTable.tsx"
+        ]
+      },
+      {
+        "id": "REQ-8",
+        "summary": "Add global live search (rounded pill input) that filters visible rows by matching across key fields (at minimum: Category, Name, Designation, Ranges, Branch, Login ID, Mobile, Email/URL, Remarks).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/credentials/CredentialSearchBar.tsx",
+          "frontend/src/hooks/useCredentialFiltering.ts",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/credentials/CredentialSearchBar.tsx",
+          "frontend/src/hooks/useCredentialFiltering.ts",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-9",
+        "summary": "Add dropdown filters for Branch, Ranges, and Category, each with an adjacent “Clear” control, plus a global “Clear Filters” button that resets search + all filters. Filters must work together (AND behavior) and update the visible rows and pagination.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/credentials/CredentialFilters.tsx",
+          "frontend/src/hooks/useCredentialFiltering.ts",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/credentials/CredentialFilters.tsx",
+          "frontend/src/hooks/useCredentialFiltering.ts",
+          "frontend/src/App.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "build-template/Dockerfile",
+    "build-template/LICENSE",
+    "build-template/README.md",
+    "build-template/deploy.sh",
+    "build-template/icp.yaml",
+    "build-template/package.json",
+    "build-template/pnpm-lock.yaml",
+    "build-template/pnpm-workspace.yaml",
+    "build-template/scripts/prune-unused-images.js",
+    "build-template/scripts/resize-images.js",
+    "build-template/src/backend/canister.yaml",
+    "build-template/src/backend/system-idl/aaaaa-aa.did",
+    "build-template/src/frontend/canister.yaml",
+    "build-template/src/frontend/components.json",
+    "build-template/src/frontend/env.json",
+    "build-template/src/frontend/eslint-rules/no-bigint-in-query-keys.js",
+    "build-template/src/frontend/eslint-rules/require-internet-identity-provider.js",
+    "build-template/src/frontend/eslint.config.js",
+    "build-template/src/frontend/package.json",
+    "build-template/src/frontend/postcss.config.js",
+    "build-template/src/frontend/src/components/ui/accordion.tsx",
+    "build-template/src/frontend/src/components/ui/alert-dialog.tsx",
+    "build-template/src/frontend/src/components/ui/alert.tsx",
+    "build-template/src/frontend/src/components/ui/aspect-ratio.tsx",
+    "build-template/src/frontend/src/components/ui/avatar.tsx",
+    "build-template/src/frontend/src/components/ui/badge.tsx",
+    "build-template/src/frontend/src/components/ui/breadcrumb.tsx",
+    "build-template/src/frontend/src/components/ui/button.tsx",
+    "build-template/src/frontend/src/components/ui/calendar.tsx",
+    "build-template/src/frontend/src/components/ui/card.tsx",
+    "build-template/src/frontend/src/components/ui/carousel.tsx",
+    "build-template/src/frontend/src/components/ui/chart.tsx",
+    "build-template/src/frontend/src/components/ui/checkbox.tsx",
+    "build-template/src/frontend/src/components/ui/collapsible.tsx",
+    "build-template/src/frontend/src/components/ui/command.tsx",
+    "build-template/src/frontend/src/components/ui/context-menu.tsx",
+    "build-template/src/frontend/src/components/ui/dialog.tsx",
+    "build-template/src/frontend/src/components/ui/drawer.tsx",
+    "build-template/src/frontend/src/components/ui/dropdown-menu.tsx",
+    "build-template/src/frontend/src/components/ui/form.tsx",
+    "build-template/src/frontend/src/components/ui/hover-card.tsx",
+    "build-template/src/frontend/src/components/ui/input-otp.tsx",
+    "build-template/src/frontend/src/components/ui/input.tsx",
+    "build-template/src/frontend/src/components/ui/label.tsx",
+    "build-template/src/frontend/src/components/ui/menubar.tsx",
+    "build-template/src/frontend/src/components/ui/navigation-menu.tsx",
+    "build-template/src/frontend/src/components/ui/pagination.tsx",
+    "build-template/src/frontend/src/components/ui/popover.tsx",
+    "build-template/src/frontend/src/components/ui/progress.tsx",
+    "build-template/src/frontend/src/components/ui/radio-group.tsx",
+    "build-template/src/frontend/src/components/ui/resizable.tsx",
+    "build-template/src/frontend/src/components/ui/scroll-area.tsx",
+    "build-template/src/frontend/src/components/ui/select.tsx",
+    "build-template/src/frontend/src/components/ui/separator.tsx",
+    "build-template/src/frontend/src/components/ui/sheet.tsx",
+    "build-template/src/frontend/src/components/ui/sidebar.tsx",
+    "build-template/src/frontend/src/components/ui/skeleton.tsx",
+    "build-template/src/frontend/src/components/ui/slider.tsx",
+    "build-template/src/frontend/src/components/ui/sonner.tsx",
+    "build-template/src/frontend/src/components/ui/switch.tsx",
+    "build-template/src/frontend/src/components/ui/table.tsx",
+    "build-template/src/frontend/src/components/ui/tabs.tsx",
+    "build-template/src/frontend/src/components/ui/textarea.tsx",
+    "build-template/src/frontend/src/components/ui/toggle-group.tsx",
+    "build-template/src/frontend/src/components/ui/toggle.tsx",
+    "build-template/src/frontend/src/components/ui/tooltip.tsx",
+    "build-template/src/frontend/src/hooks/use-mobile.tsx",
+    "build-template/src/frontend/src/lib/utils.ts",
+    "build-template/src/frontend/tsconfig.json",
+    "build-template/src/frontend/vite.config.js",
+    "build-template/tsconfig.json",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/public/manifest.webmanifest",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/credentials/BadgeMultiSelect.tsx",
+    "frontend/src/components/credentials/CopyButton.tsx",
+    "frontend/src/components/credentials/CredentialFilters.tsx",
+    "frontend/src/components/credentials/CredentialFormModal.tsx",
+    "frontend/src/components/credentials/CredentialSearchBar.tsx",
+    "frontend/src/components/credentials/CredentialTable.tsx",
+    "frontend/src/components/credentials/DeleteCredentialConfirm.tsx",
+    "frontend/src/components/credentials/EmptyState.tsx",
+    "frontend/src/components/credentials/PaginationControls.tsx",
+    "frontend/src/components/credentials/PasswordCell.tsx",
+    "frontend/src/components/dashboard/PageTitleBlock.tsx",
+    "frontend/src/components/layout/FixedFooter.tsx",
+    "frontend/src/components/layout/StickyHeader.tsx",
+    "frontend/src/components/layout/ThemeToggle.tsx",
+    "frontend/src/components/print/PrintButton.tsx",
+    "frontend/src/config.ts",
+    "frontend/src/constants/credentialOptions.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useCredentialFiltering.ts",
+    "frontend/src/hooks/useCredentials.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/usePagination.ts",
+    "frontend/src/hooks/useTheme.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/storage/credentialsStorage.ts",
+    "frontend/src/types/credentials.ts",
+    "frontend/src/ui-summary.json",
+    "frontend/src/utils/StorageClient.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
