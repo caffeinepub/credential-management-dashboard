@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
@@ -12,6 +12,7 @@ import PaginationControls from './components/credentials/PaginationControls';
 import CredentialFormModal from './components/credentials/CredentialFormModal';
 import EmptyState from './components/credentials/EmptyState';
 import PrintButton from './components/print/PrintButton';
+import AndroidApkDialog from './components/apk/AndroidApkDialog';
 import { useCredentials } from './hooks/useCredentials';
 import { useCredentialFiltering } from './hooks/useCredentialFiltering';
 import { usePagination } from './hooks/usePagination';
@@ -24,6 +25,21 @@ function DashboardContent() {
   const { credentials, addCredential, updateCredential, deleteCredential } = useCredentials();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCredential, setEditingCredential] = useState<any>(null);
+  const [isApkDialogOpen, setIsApkDialogOpen] = useState(false);
+
+  // Register service worker for PWA functionality
+  useEffect(() => {
+    if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+      navigator.serviceWorker
+        .register('/service-worker.js')
+        .then((registration) => {
+          console.log('Service Worker registered successfully:', registration.scope);
+        })
+        .catch((error) => {
+          console.warn('Service Worker registration failed:', error);
+        });
+    }
+  }, []);
 
   const {
     searchQuery,
@@ -131,7 +147,7 @@ function DashboardContent() {
         )}
       </main>
 
-      <FixedFooter />
+      <FixedFooter onApkClick={() => setIsApkDialogOpen(true)} />
       
       <CredentialFormModal
         open={isFormOpen}
@@ -139,6 +155,11 @@ function DashboardContent() {
         onSubmit={editingCredential ? handleEditCredential : handleAddCredential}
         initialData={editingCredential}
         mode={editingCredential ? 'edit' : 'add'}
+      />
+
+      <AndroidApkDialog 
+        open={isApkDialogOpen} 
+        onOpenChange={setIsApkDialogOpen} 
       />
       
       <Toaster />

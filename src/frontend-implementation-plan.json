@@ -1,422 +1,86 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Credential Management Dashboard (Gov/Enterprise) — Frontend",
+  "title": "Fix APK download placeholder removal and robust availability validation",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Create a responsive, mobile-first admin dashboard web app shell (PWA-style installable) titled “Credential Management Dashboard”.",
+      "summary": "Remove the shipped placeholder APK so the downloads URL 404s until a real signed universal APK is provided.",
       "acceptanceCriteria": [
-        "App renders correctly on common mobile widths (e.g., 360px) and desktop widths.",
-        "The UI is mobile-first and supports horizontal scrolling where needed for wide tables.",
-        "App name “Credential Management Dashboard” is visible in the UI (e.g., header/title) and used in page metadata."
+        "`frontend/public/downloads/app.apk` is no longer an empty/placeholder file in the deployed frontend assets.",
+        "Requesting `/downloads/app.apk` returns HTTP 404 when no real APK is provided.",
+        "The `frontend/public/downloads/README.md` guidance remains accurate for the 404 default behavior."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
-          "operation": "create",
-          "description": "Implement the main dashboard page layout (mobile-first), including the app name “Credential Management Dashboard” in the UI, and compose all required sections (header, content, table, controls, footer)."
+          "path": "frontend/public/downloads/app.apk",
+          "operation": "delete",
+          "description": "Remove the placeholder APK from static assets so the deployed asset canister serves 404 for `/downloads/app.apk` until a real signed universal APK is added."
         },
         {
-          "path": "frontend/index.html",
+          "path": "frontend/public/downloads/README.md",
           "operation": "modify",
-          "description": "Ensure page metadata uses the app name “Credential Management Dashboard” (title) and add PWA-related meta/link tags needed for an installable browser experience."
+          "description": "Review and adjust wording (if needed) to ensure guidance explicitly matches the new default behavior: `/downloads/app.apk` returns 404 until a real signed universal APK is placed at `frontend/public/downloads/app.apk` and redeployed."
         },
         {
-          "path": "frontend/public/manifest.webmanifest",
-          "operation": "create",
-          "description": "Add a web app manifest configuring name/short_name “Credential Management Dashboard”, start URL, display mode, and theme/background colors for PWA-style installation."
-        },
-        {
-          "path": "frontend/public/sw.js",
-          "operation": "create",
-          "description": "Add a minimal service worker for basic offline shell caching to support a PWA-style experience."
-        },
-        {
-          "path": "frontend/src/main.tsx",
+          "path": "frontend/public/downloads/.gitkeep",
           "operation": "modify",
-          "description": "Register the service worker on supported browsers and ensure the app bootstraps correctly with the existing React Query provider."
+          "description": "Keep the downloads directory preserved in version control; ensure it remains the only placeholder artifact after removing `app.apk` (no functional change expected)."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Apply a consistent Government/Enterprise light theme with white cards, subtle shadows, smooth transitions, and Inter/Calibri/Segoe UI typography.",
+      "summary": "Ensure APK responses have correct content type and strict no-cache headers, and remain reliable with cache-busting query params.",
       "acceptanceCriteria": [
-        "Primary layout uses a light page background and white cards with subtle shadows.",
-        "Typography uses Inter if available, otherwise Calibri/Segoe UI fallbacks.",
-        "Interactive elements (menus/modals/toggles) include subtle transitions without jarring motion."
+        "`/downloads/app.apk` is served with `Content-Type: application/vnd.android.package-archive` when present.",
+        "`/downloads/app.apk` is served with `Cache-Control: no-cache, no-store, must-revalidate` (and related no-cache headers) when present.",
+        "Behavior is consistent for requests like `/downloads/app.apk?t=<timestamp>` (no cached placeholder responses after redeploy)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
-          "operation": "create",
-          "description": "Define global typography (Inter with Calibri/Segoe UI fallbacks), base background, card styling tokens, subtle shadow utilities, and motion-safe transitions; include print and dark-mode foundations where appropriate."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
+          "path": "frontend/public/.ic-assets.json5",
           "operation": "modify",
-          "description": "Extend Tailwind theme (as needed) to support enterprise card shadows/animations and ensure darkMode class strategy is used consistently."
+          "description": "Confirm/adjust asset canister rules so `downloads/app.apk` (and other `downloads/*.apk`) are served with `Content-Type: application/vnd.android.package-archive` and strict no-cache headers; ensure the rules apply regardless of UI cache-busting query parameters."
         },
         {
-          "path": "frontend/src/components/layout/DashboardLayout.tsx",
-          "operation": "create",
-          "description": "Create a reusable layout wrapper that applies the light background, card containers, spacing, and consistent enterprise styling across the dashboard screens."
+          "path": "frontend/public/service-worker.js",
+          "operation": "modify",
+          "description": "Harden the fetch handler for `/downloads/app.apk` so it never caches APK responses and always passes through network responses for requests with cache-busting query parameters and for Range/HEAD/GET checks (avoiding any stale cached responses after redeploy)."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Add a sticky header with logo placeholder + exact centered header text, and show the specified main title/subtitle in the content area.",
+      "summary": "Make APK availability validation robust by using a byte-range GET and verifying the ZIP/APK signature even when headers are missing or misleading.",
       "acceptanceCriteria": [
-        "Header stays visible when scrolling the page.",
-        "Header contains a visible logo placeholder area at left and the exact centered text provided.",
-        "Main title and subtitle are displayed as specified."
+        "When the server responds with HTML/text (e.g., error page), the hook returns `status: 'invalid'` with an explanatory message.",
+        "When the server responds with a very small file (KB range) or a file missing the ZIP signature, the hook returns `status: 'invalid'`.",
+        "When a real APK is present (MB range and ZIP signature present), the hook returns `status: 'available'`.",
+        "When no APK is hosted (404), the hook returns `status: 'missing'`."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/layout/StickyHeader.tsx",
-          "operation": "create",
-          "description": "Implement a fixed/sticky header with a left logo placeholder region and centered text exactly: “Office of the Director General – State Vigilance & Anti-Corruption Bureau, Haryana – Panchkula”."
-        },
-        {
-          "path": "frontend/src/components/dashboard/PageTitleBlock.tsx",
-          "operation": "create",
-          "description": "Add a main title block displaying “Credential Management System” and subtitle “User Login Details” within the main content area."
-        },
-        {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/hooks/useApkAvailability.ts",
           "operation": "modify",
-          "description": "Wire StickyHeader and PageTitleBlock into the main dashboard layout so they render on the primary screen."
+          "description": "Update availability checks to always perform a small byte-range GET (e.g., first 4 bytes) and validate the `PK\\x03\\x04` signature, reliably classifying 404 as `missing`, HTML/text/error bodies as `invalid`, and network failures as `unreachable`, without relying on `Content-Length` being present/accurate."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Add a fixed footer that remains visible and displays the exact confidentiality text.",
+      "summary": "Update the Android APK download dialog to keep Download disabled unless a valid APK is available and provide clear English guidance for missing/invalid/unreachable states.",
       "acceptanceCriteria": [
-        "Footer is fixed/sticky to the bottom and remains visible during scroll.",
-        "Footer text matches exactly, including capitalization and punctuation."
+        "If APK status is `missing`, `invalid`, or `unreachable`, the \"Download APK\" button is disabled.",
+        "If APK status is `missing`, the dialog clearly communicates that no APK is currently hosted and that this is expected until a signed universal APK is deployed.",
+        "If APK status is `invalid`, the dialog clearly communicates that the hosted file is not a valid APK (likely placeholder/error page) and provides steps to replace it with a signed universal APK built via Bubblewrap.",
+        "All user-facing text in these states is in English."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/layout/FixedFooter.tsx",
-          "operation": "create",
-          "description": "Implement a fixed footer displaying exactly: “Confidential – For Official Use Only” with enterprise styling and readability in light/dark themes."
-        },
-        {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/apk/AndroidApkDialog.tsx",
           "operation": "modify",
-          "description": "Wire FixedFooter into the app layout so it remains visible at the bottom of the viewport."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Implement credential record CRUD UI with an add/edit modal or drawer form including all required fields and a masked password with eye toggle.",
-      "acceptanceCriteria": [
-        "Add form includes all specified fields and can create a new record that appears in the table.",
-        "Edit action opens a form prefilled with the selected row’s values and saves updates back to the list.",
-        "Delete action removes the record after a confirmation step.",
-        "Password field is masked by default and can be toggled visible/hidden via an eye icon."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/types/credentials.ts",
-          "operation": "create",
-          "description": "Define the credential record TypeScript model (Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks) and shared form/table field identifiers."
-        },
-        {
-          "path": "frontend/src/components/credentials/CredentialFormModal.tsx",
-          "operation": "create",
-          "description": "Build the floating “Add Credential” / “Edit Credential” modal or drawer form, including masked password with eye toggle. Use shadcn-ui components (e.g., Dialog/Drawer, Button, Input, Textarea, Select) to implement the form UI. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/credentials/DeleteCredentialConfirm.tsx",
-          "operation": "create",
-          "description": "Add a confirmation dialog for delete actions. Use shadcn-ui components (e.g., AlertDialog, Button) for confirmation UX. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useCredentials.ts",
-          "operation": "create",
-          "description": "Implement React Query-powered credential CRUD state management (read list, add, edit, delete) with side effects to local persistence and optimistic UI updates where appropriate."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire the Add Credential action (floating button or primary action) to open the form; connect edit/delete actions to open prefilled form or confirmation dialog and apply mutations so changes reflect in the table."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Render a responsive, scrollable credential table with sticky header, zebra striping, hover highlight, horizontal scrolling on mobile, and good performance for 1000+ rows.",
-      "acceptanceCriteria": [
-        "Table includes all required columns in the specified order.",
-        "Table header remains visible while scrolling the table area.",
-        "Rows are zebra-striped and highlight on hover on desktop devices.",
-        "On mobile, the table can be scrolled horizontally without breaking layout.",
-        "Performance remains acceptable when rendering and interacting with 1000+ records (e.g., no multi-second UI freezes on common interactions)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/credentials/CredentialTable.tsx",
-          "operation": "create",
-          "description": "Implement the responsive table with required columns (Sr No, Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks), sticky table header, zebra striping, and hover highlight; ensure horizontal scroll container for small screens."
-        },
-        {
-          "path": "frontend/src/components/credentials/CredentialTableRowActions.tsx",
-          "operation": "create",
-          "description": "Create a row actions cell container used by the table for edit/delete and per-row password/copy actions; keep actions accessible on mobile (tap targets)."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add table styling helpers (sticky header behavior, zebra striping, hover styles, horizontal scroll affordances) and ensure consistent card/table spacing for mobile-first layout."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire CredentialTable into the main page, passing the derived visible dataset (after search/filters/pagination) and handlers."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Show Ranges and Branch as badge pills and provide exact-option selection UI for both fields in add/edit form.",
-      "acceptanceCriteria": [
-        "Ranges values render as badges in table cells and are selectable in the form.",
-        "Branch values render as badges in table cells and are selectable in the form.",
-        "The selectable options match exactly the provided lists (including capitalization like “Secret branch”)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/constants/credentialOptions.ts",
-          "operation": "create",
-          "description": "Add the exact Ranges options and Branch options lists as constants for consistent reuse across form, filters, and table badge rendering."
-        },
-        {
-          "path": "frontend/src/components/credentials/BadgeMultiSelect.tsx",
-          "operation": "create",
-          "description": "Implement a multi-select control that displays selected items as badge-style pills and allows selecting from the provided options. Use shadcn-ui primitives (e.g., Popover/Command/Checkbox/Badge) as appropriate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/credentials/CredentialFormModal.tsx",
-          "operation": "modify",
-          "description": "Use the shared options constants and BadgeMultiSelect to select and display Ranges and Branch as badge pills in the add/edit form. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/credentials/CredentialTable.tsx",
-          "operation": "modify",
-          "description": "Render Ranges and Branch values as badge-style pills in table cells (consistent with the form) and ensure badge contrast remains readable in light/dark modes."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Add a global live search pill input filtering rows across key fields.",
-      "acceptanceCriteria": [
-        "Typing in search input filters the table results immediately without needing a submit action.",
-        "Search affects at least the specified fields and updates pagination accordingly.",
-        "Search input is styled as a rounded pill."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/credentials/CredentialSearchBar.tsx",
-          "operation": "create",
-          "description": "Implement the rounded pill live search input that updates search state on change and is styled for enterprise dashboard use. Use shadcn-ui Input (and optional icon) to match design. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useCredentialFiltering.ts",
-          "operation": "create",
-          "description": "Create derived filtering utilities/hooks to apply live search across at least: Category, Name, Designation, Ranges, Branch, Login ID, Mobile, Email/URL, Remarks; ensure changes reset pagination to page 1."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire CredentialSearchBar and connect search state to the derived visible dataset and pagination reset behavior."
-        }
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "summary": "Add dropdown filters for Branch, Ranges, and Category with per-filter clear controls and a global Clear Filters button; filters AND together.",
-      "acceptanceCriteria": [
-        "Branch, Ranges, and Category filters are available as dropdowns.",
-        "Each filter can be cleared independently, and a global Clear Filters resets all filters and search.",
-        "Applying multiple filters results in the intersection of conditions (AND)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/credentials/CredentialFilters.tsx",
-          "operation": "create",
-          "description": "Implement Branch/Ranges/Category dropdown filters with adjacent Clear controls and a global Clear Filters button. Use shadcn-ui Select/DropdownMenu/Button as appropriate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useCredentialFiltering.ts",
-          "operation": "modify",
-          "description": "Extend filtering logic to apply Branch + Ranges + Category filters with AND behavior, and to provide helpers for clearing individual filters and clearing all (including search)."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire CredentialFilters into the dashboard and ensure filters + search update the visible rows and reset pagination correctly."
-        }
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "summary": "Mask passwords by default in the table with per-row show/hide toggles and add copy-to-clipboard for Login ID and Password with success feedback.",
-      "acceptanceCriteria": [
-        "Passwords are masked by default in the table.",
-        "Each row provides a control to toggle that row’s password visibility.",
-        "Copy buttons copy the correct values to clipboard and show a success indication (e.g., toast/snackbar)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/credentials/PasswordCell.tsx",
-          "operation": "create",
-          "description": "Create a table cell renderer that masks passwords by default and supports per-row show/hide via an eye toggle."
-        },
-        {
-          "path": "frontend/src/components/feedback/ToastProvider.tsx",
-          "operation": "create",
-          "description": "Add a lightweight toast/snackbar system for copy success feedback (or compose shadcn-ui toast/sonner if available). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/utils/clipboard.ts",
-          "operation": "create",
-          "description": "Implement a safe clipboard helper that writes Login ID/Password to the clipboard and reports success/failure for UI feedback."
-        },
-        {
-          "path": "frontend/src/components/credentials/CredentialTable.tsx",
-          "operation": "modify",
-          "description": "Integrate PasswordCell and add per-row copy buttons for Login ID and Password; trigger toast/snackbar success feedback upon successful copy."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Mount the toast provider at the app root so copy feedback is visible across the dashboard."
-        }
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "summary": "Add row-level edit/delete actions and pagination controls that work with search and filters for 1000+ entries.",
-      "acceptanceCriteria": [
-        "Each row has visible edit and delete actions.",
-        "Table supports paging through large datasets; changing page updates rows without full page reload.",
-        "Search and filters apply to the paginated dataset and reset to page 1 when criteria changes."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/credentials/PaginationControls.tsx",
-          "operation": "create",
-          "description": "Implement pagination controls suitable for large datasets (page number navigation and optional page size selector) with accessible, mobile-friendly controls. Use shadcn-ui Button/Select as appropriate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/usePagination.ts",
-          "operation": "create",
-          "description": "Add a pagination state hook that supports page changes, optional page size changes, and resetting to page 1 when search/filters change."
-        },
-        {
-          "path": "frontend/src/components/credentials/CredentialTable.tsx",
-          "operation": "modify",
-          "description": "Ensure each row displays edit/delete icons/actions and that the table consumes only the current page slice for performance."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire pagination state to the filtered dataset; ensure search/filters reset to page 1 and pagination reflects the filtered result count."
-        }
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "summary": "Persist credentials locally in LocalStorage with safe handling of corrupt/invalid saved data.",
-      "acceptanceCriteria": [
-        "Creating/editing/deleting records updates LocalStorage.",
-        "Refreshing the page restores the saved records.",
-        "If LocalStorage data is invalid, the app loads with an empty list and does not crash."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/storage/credentialsStorage.ts",
-          "operation": "create",
-          "description": "Implement LocalStorage read/write helpers with schema-safe parsing/validation and graceful fallback to an empty list on corrupt/invalid data."
-        },
-        {
-          "path": "frontend/src/hooks/useCredentials.ts",
-          "operation": "modify",
-          "description": "Integrate LocalStorage persistence: initialize from storage on load and write-through on create/edit/delete; ensure invalid stored data falls back to empty state without crashing."
-        },
-        {
-          "path": "frontend/src/components/credentials/EmptyState.tsx",
-          "operation": "create",
-          "description": "Add an empty state UI shown when there are no records (including after invalid LocalStorage fallback), with an obvious call-to-action to add a credential."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Display the EmptyState when no credentials exist and ensure it can open the Add Credential form."
-        }
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "summary": "Add a dark mode toggle with persisted theme preference and maintain readability of table, badges, header, and footer.",
-      "acceptanceCriteria": [
-        "A dark mode toggle exists and switches the UI between light and dark themes.",
-        "Theme selection persists after refresh/reopen.",
-        "Table, badges, header/footer remain readable in dark mode."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useTheme.ts",
-          "operation": "create",
-          "description": "Implement theme preference handling (light/dark), persisting to LocalStorage, and applying the Tailwind dark class to the document root."
-        },
-        {
-          "path": "frontend/src/components/layout/ThemeToggle.tsx",
-          "operation": "create",
-          "description": "Add a dark mode toggle control suitable for the sticky header. Use shadcn-ui Switch/Button where appropriate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/layout/StickyHeader.tsx",
-          "operation": "modify",
-          "description": "Wire ThemeToggle into the header and ensure header styling remains readable and consistent in dark mode."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add dark-mode styling adjustments for page background, cards, table zebra striping, badge contrast, and fixed footer readability."
-        }
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "summary": "Add a print option that prints the currently visible (filtered/searched) records with a clean multi-page A4/Letter layout including the specified header and titles.",
-      "acceptanceCriteria": [
-        "A Print action is available from the UI.",
-        "Print view includes the specified header text and titles.",
-        "Print output prints the currently visible filtered/searched dataset and paginates across pages when necessary.",
-        "Print stylesheet/layout avoids overlapping content and preserves table legibility."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/print/PrintButton.tsx",
-          "operation": "create",
-          "description": "Implement a Print action control that triggers browser printing for the current view (using the currently visible filtered/searched dataset). Use shadcn-ui Button where appropriate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add @media print styles to produce a professional print layout: include the header text and page titles, hide non-print UI controls, and ensure the table prints across multiple pages without clipped/overlapping content (allow wrapping and multi-page flow)."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire the PrintButton into the dashboard controls area and ensure the printed output includes the exact header text plus “Credential Management System” and “User Login Details”, and prints the currently visible (filtered/searched) records."
+          "description": "Refine state handling and user-facing copy so Download remains disabled for `missing`/`invalid`/`unreachable`, and the dialog clearly explains how to replace the hosted file with a signed universal APK built via Bubblewrap; add explicit guidance for the `unreachable` case as well, keeping all text English-only. Verify the component's usage instructions before implementing."
         }
       ]
     }

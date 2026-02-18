@@ -1,18 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Build a responsive, mobile-first “Credential Management Dashboard” web app (PWA-style installable on Android via browser) for managing 1000+ credential records with a Government/Enterprise admin-dashboard UI.
+**Goal:** Fix Android APK download behavior by removing the shipped placeholder APK, ensuring correct serving headers, and making frontend availability checks reliably detect real vs invalid/missing APKs.
 
 **Planned changes:**
-- Create the dashboard layout with a sticky header (logo placeholder + exact department header text), main title/subtitle, and a fixed footer with “Confidential – For Official Use Only”.
-- Implement credential CRUD (add/edit/delete) via a floating modal/drawer form with the required fields and password masking + eye toggle.
-- Render credentials in a responsive, performant, scrollable table (sticky table header, zebra striping, hover highlight, horizontal scroll on mobile) with the required columns and per-row actions.
-- Add badge-style pill display/selection for Ranges and Branch using the exact provided option lists.
-- Add global live search (pill input) plus dropdown filters for Branch/Ranges/Category with per-filter clear and a global “Clear Filters” (AND behavior with pagination).
-- Add per-row password masking/show toggle and copy-to-clipboard for Login ID and Password with success feedback.
-- Add pagination suitable for 1000+ entries that works with search and filters.
-- Persist records in LocalStorage with safe handling of corrupt/invalid saved data.
-- Add dark mode toggle with persisted theme preference.
-- Add a Print action with a clean print layout including the header text, title/subtitle, and a table of the currently visible (filtered/searched) records across multiple pages.
+- Remove the placeholder `frontend/public/downloads/app.apk` from deployed assets so `/downloads/app.apk` returns 404 until a real signed universal APK is provided (keep the downloads README guidance accurate for this default).
+- Ensure `/downloads/app.apk` (when present) is served with the correct APK `Content-Type` and strict no-cache headers, including for cache-busting query parameters (e.g., `?t=<timestamp>`).
+- Harden `frontend/src/hooks/useApkAvailability.ts` by validating via a small byte-range GET and checking for the ZIP/APK signature (`PK\x03\x04`), correctly classifying `missing` (404), `invalid` (placeholder/error/HTML/small/non-signature), and `available` (real APK).
+- Update `frontend/src/components/apk/AndroidApkDialog.tsx` so the Download button stays disabled for `missing`/`invalid`/`unreachable`, and show clear English guidance explaining the missing/invalid states and that a signed universal APK built via Bubblewrap must be deployed.
 
-**User-visible outcome:** Users can add, view, search, filter, paginate, edit, delete, copy, and print credential records in a professional light/dark admin dashboard, with data and theme saved locally across refreshes.
+**User-visible outcome:** Users only see an enabled “Download APK” action when a real APK is actually hosted; otherwise the dialog clearly explains whether the APK is missing or invalid and what must be done to provide a proper signed universal APK.

@@ -1,5 +1,5 @@
 {
-  "frontend/src/App.tsx": "Main application component orchestrating the credential management dashboard with search, filters, pagination, CRUD operations, and theme support wrapped in necessary providers.",
+  "frontend/src/App.tsx": "Main application component orchestrating the credential management dashboard with search, filters, pagination, CRUD operations, theme support, service worker registration for PWA functionality, and Android APK dialog integration.",
   "frontend/src/types/credentials.ts": "TypeScript type definitions for credential records and form data structures.",
   "frontend/src/constants/credentialOptions.ts": "Constant arrays defining the exact options for Ranges, Branch, and Category fields as specified in requirements.",
   "frontend/src/storage/credentialsStorage.ts": "LocalStorage persistence layer with safe read/write operations and graceful error handling for corrupt data.",
@@ -9,7 +9,7 @@
   "frontend/src/hooks/useTheme.ts": "Custom hook for theme management with localStorage persistence (light/dark mode toggle).",
   "frontend/src/components/layout/StickyHeader.tsx": "Fixed header component with logo placeholder, centered bureau text, and theme toggle.",
   "frontend/src/components/layout/ThemeToggle.tsx": "Dark mode toggle button component with sun/moon icons.",
-  "frontend/src/components/layout/FixedFooter.tsx": "Fixed footer displaying the confidentiality notice.",
+  "frontend/src/components/layout/FixedFooter.tsx": "Fixed footer displaying confidentiality notice with an optional Android APK link that triggers a callback to open the APK download dialog.",
   "frontend/src/components/dashboard/PageTitleBlock.tsx": "Component displaying the main title \"Credential Management System\" and subtitle \"User Login Details\".",
   "frontend/src/components/credentials/CredentialSearchBar.tsx": "Rounded pill search input with live filtering across credential fields.",
   "frontend/src/components/credentials/CredentialFilters.tsx": "Filter controls for Category, Ranges, and Branch with individual and global clear buttons.",
@@ -25,5 +25,15 @@
   "frontend/src/index.css": "Global styles with OKLCH color system, Inter/Calibri/Segoe UI typography, print media queries, table styling, and smooth animations.",
   "frontend/tailwind.config.js": "Tailwind configuration with Inter font family, enterprise color palette, custom shadows, and animation utilities.",
   "frontend/index.html": "HTML entry point with PWA meta tags, Inter font import, and proper viewport configuration.",
-  "frontend/public/manifest.webmanifest": "Web app manifest enabling PWA-style installation on mobile devices with app metadata."
+  "frontend/public/manifest.webmanifest": "Web app manifest enabling PWA-style installation on mobile devices with updated icon paths pointing to generated assets under /assets/generated.",
+  "frontend/ANDROID_APK.md": "Complete comprehensive guide for building Android APKs from deployed PWAs using Bubblewrap and TWA technology, covering prerequisites, universal APK requirements, step-by-step build instructions, signing best practices, hosting procedures, extensive troubleshooting, Digital Asset Links setup, and minimum requirements.",
+  "frontend/public/service-worker.js": "Service worker providing offline-capable caching for static assets with network-first strategy, automatic cache versioning and cleanup, and explicit network-only bypass for all APK requests (including HEAD, Range, and cache-busting query parameters) to ensure fresh downloads after redeploy.",
+  "frontend/src/components/apk/AndroidApkDialog.tsx": "Enhanced APK download dialog with comprehensive state handling for missing, invalid, unreachable, and available APK states, providing clear English guidance and disabled download button for non-available states with detailed troubleshooting instructions for each scenario.",
+  "frontend/src/components/apk/AndroidApkInstructions.tsx": "Updated in-dialog build instructions component emphasizing universal APK generation with --universalApk flag, signing best practices, troubleshooting section for parse errors, minimum Android requirements (API 21+), and explicit hosting instructions for frontend/public/downloads/app.apk.",
+  "frontend/public/downloads/README.md": "Comprehensive documentation for building, signing, verifying, and deploying universal Android APKs using Bubblewrap, with clear explanation that no APK is hosted by default (404 expected) until manually deployed, plus troubleshooting and technical requirements.",
+  "frontend/public/downloads/.gitkeep": "Placeholder file ensuring the downloads directory exists in version control.",
+  "frontend/src/hooks/useApkAvailability.ts": "React hook that performs cache-busted availability checks for the APK file with fallback validation using byte-range requests to verify ZIP/APK signature (PK) and detect HTML/text placeholders, returning detailed status ('checking', 'available', 'invalid', 'missing', 'unreachable') even when Content-Length is missing or incorrect.",
+  "frontend/src/hooks/useApkIntegrity.ts": "React hook that fetches APK metadata (size, content-type, last-modified) with cache-busting and validates against minimum size threshold (100 KB), provides on-demand SHA-256 checksum calculation, and returns explicit errors when the hosted file is too small or has invalid content-type.",
+  "frontend/public/.ic-assets.json5": "IC asset canister configuration that serves APK files with correct Content-Type (application/vnd.android.package-archive) and strict no-cache headers for both specific app.apk and wildcard *.apk patterns, while applying long-term caching to all other static assets.",
+  "frontend/public/downloads/app.apk": "Comprehensive placeholder text file with explicit warnings, step-by-step instructions, common mistakes to avoid, technical requirements, and troubleshooting guidance for replacing with a real signed universal APK binary before deployment."
 }

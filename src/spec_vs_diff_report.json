@@ -1,120 +1,59 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T15:07:19.537Z",
-  "summary": "Diff adds a React+TS dashboard shell with sticky header/footer, search, filters, table UI with password masking/toggles and copy buttons, a modal form for add/edit, delete confirmation, pagination controls, dark-mode toggle via next-themes, and a basic print button (window.print). It also adds an empty Motoko backend actor plus actor/Internet Identity hook plumbing. Several BuildRequest requirements cannot be fully verified from the truncated diff, and some implemented auth/actor features were not requested.",
+  "generatedAt": "2026-02-15T17:31:35.916Z",
+  "summary": "Diff only shows changes to the Android APK dialog plus updates to metadata/state files. There is no evidence that the placeholder APK asset was removed, that asset canister headers were configured, or that `useApkAvailability.ts` was hardened per the request. The dialog change partially addresses disabling the download button for some statuses, but the diff is truncated so the required user-facing guidance updates cannot be confirmed.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "App name “Credential Management Dashboard” is visible in the UI and used in page metadata.",
-      "reason": "Header/title shown in provided files uses the long office header text and the main page title is “Credential Management System”. No evidence of showing “Credential Management Dashboard” anywhere or setting page metadata (e.g., document title/meta tags/manifest).",
+      "requirement": "Remove the placeholder `frontend/public/downloads/app.apk` from deployed assets so `/downloads/app.apk` returns 404 by default, and keep `frontend/public/downloads/README.md` guidance accurate.",
+      "reason": "No changes shown to `frontend/public/downloads/app.apk` (removal) or `frontend/public/downloads/README.md`. Diff summary indicates no removed files and does not mention any `public/downloads` changes.",
       "evidence": [
-        "frontend/src/components/layout/StickyHeader.tsx",
-        "frontend/src/components/dashboard/PageTitleBlock.tsx",
-        "frontend/src/App.tsx (truncated)"
+        "<file-diff>: Removed: 0, Modified: 3 (none in frontend/public/downloads)"
       ]
     },
     {
-      "id": "REQ-5",
-      "requirement": "Add/Edit Credential form includes all specified fields (Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks) and supports create + edit with prefilled values.",
-      "reason": "Form file is truncated; while initial state includes all fields and prefill logic exists, the diff excerpt does not show the full rendered form (notably fields beyond designation are not visible in the snippet), so full field coverage and wiring cannot be confirmed from evidence provided.",
+      "id": "REQ-2",
+      "requirement": "Ensure `/downloads/app.apk` is served with correct `Content-Type` and strict no-cache headers, consistently even with cache-busting query parameters.",
+      "reason": "No evidence of any asset-canister configuration or header changes in the provided modified files. Only `AndroidApkDialog.tsx`, `frontend-file-summaries.txt`, and `project_state.json` were modified.",
       "evidence": [
-        "frontend/src/components/credentials/CredentialFormModal.tsx (truncated)"
+        "frontend/src/components/apk/AndroidApkDialog.tsx",
+        "frontend-file-summaries.txt",
+        "project_state.json"
       ]
     },
     {
-      "id": "REQ-11",
-      "requirement": "Pagination must work with search and filters and reset to page 1 when criteria changes.",
-      "reason": "Filtering hook is shown, and pagination controls exist, but the pagination hook implementation and any logic that resets currentPage to 1 on search/filter change are not included in the diff summary; cannot verify required behavior.",
+      "id": "REQ-3",
+      "requirement": "Harden `frontend/src/hooks/useApkAvailability.ts` by performing a small byte-range GET and verifying ZIP/APK signature (`PK\\x03\\x04`) to classify missing/invalid/available reliably.",
+      "reason": "`frontend/src/hooks/useApkAvailability.ts` is not modified in the diff summary, and no evidence shows byte-range GET or signature validation logic being added.",
       "evidence": [
-        "frontend/src/hooks/useCredentialFiltering.ts",
-        "frontend/src/components/credentials/PaginationControls.tsx",
-        "frontend/src/App.tsx (truncated)"
+        "<file-diff>: Modified files list does not include frontend/src/hooks/useApkAvailability.ts"
       ]
     },
     {
-      "id": "REQ-12",
-      "requirement": "Persist credential records locally in LocalStorage with safe handling for corrupt/invalid saved data.",
-      "reason": "The storage/persistence logic would likely be in useCredentials, but that hook’s implementation is not present in the diff summary; therefore LocalStorage persistence and corrupt-data fallback cannot be verified.",
+      "id": "REQ-4",
+      "requirement": "Update `AndroidApkDialog.tsx` so Download is disabled for missing/invalid/unreachable and the dialog provides clear English guidance for missing vs invalid states (including Bubblewrap steps for replacement).",
+      "reason": "The diff shows only the disabled condition (`isDownloadDisabled`) being set based on status, but the remainder of the component (where user-facing guidance text would be) is truncated, so the required messaging updates cannot be verified from the provided evidence.",
       "evidence": [
-        "frontend/src/App.tsx (truncated)"
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "requirement": "Persist dark mode preference locally.",
-      "reason": "Theme toggle uses next-themes, but there is no shown ThemeProvider configuration or explicit persistence handling; persistence cannot be confirmed from the provided excerpts.",
-      "evidence": [
-        "frontend/src/App.tsx (truncated)",
-        "frontend/src/components/layout/ThemeToggle.tsx"
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "requirement": "Print layout: clean professional print view including header text + “Credential Management System” title/subtitle and a table of currently visible filtered/searched records, formatted for multi-page A4/Letter without clipped columns.",
-      "reason": "Only a Print button calling window.print() is shown. No dedicated print stylesheet/layout rules ensuring column wrapping/non-clipping, multi-page formatting, or explicit inclusion/formatting of required header/title in print output are evidenced (beyond a few print:hidden/print:relative utility classes). Also PrintButton accepts data but does not use it, so printing the current filtered dataset is indirect and not explicitly implemented.",
-      "evidence": [
-        "frontend/src/components/print/PrintButton.tsx",
-        "frontend/src/components/layout/StickyHeader.tsx",
-        "frontend/src/components/layout/FixedFooter.tsx",
-        "frontend/src/components/credentials/CredentialTable.tsx (truncated)",
-        "frontend/src/App.tsx (truncated)"
+        "frontend/src/components/apk/AndroidApkDialog.tsx (truncated): \"const isDownloadDisabled = status === 'invalid' || status === 'missing' || status === 'unreachable';\""
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Internet Identity / authenticated actor plumbing (useActor depending on useInternetIdentity) and backend actor creation flow.",
-      "reason": "BuildRequest explicitly says no authentication is requested (“only Internet Identity is allowed if authentication is later added”), and no backend functionality was required. Adding II/actor hooks and backend integration is beyond the requested scope.",
+      "description": "Added/used an APK integrity/checksum feature via `useApkIntegrity` (SHA-256 checksum copy, calculating checksum UI state).",
+      "reason": "BuildRequest focuses on placeholder removal, correct serving headers, byte-range signature validation in `useApkAvailability`, and dialog messaging/disable behavior. It does not request adding an integrity/checksum hook or checksum UI/copy flows.",
       "evidence": [
-        "frontend/src/hooks/useActor.ts",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "description": "Introduction of a Motoko backend canister (empty actor).",
-      "reason": "No backend functionality was requested; requirement set is entirely frontend + LocalStorage persistence. Adding a backend actor (even empty) is not requested.",
-      "evidence": [
-        "backend/main.mo"
+        "frontend/src/components/apk/AndroidApkDialog.tsx: \"import { useApkIntegrity } from '@/hooks/useApkIntegrity';\"",
+        "frontend/src/components/apk/AndroidApkDialog.tsx: \"const { ... sha256, isCalculating, calculateChecksum } = useApkIntegrity(...)\"",
+        "frontend/src/components/apk/AndroidApkDialog.tsx: \"toast.success('SHA-256 checksum copied to clipboard')\""
       ]
     }
   ],
-  "confidence": 0.66,
+  "confidence": 0.74,
   "changed_files": [
-    "all_files_summary.json",
-    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/index.css",
-    "frontend/index.html",
-    "frontend/public/manifest.webmanifest",
-    "frontend/src/App.tsx",
-    "frontend/src/components/credentials/BadgeMultiSelect.tsx",
-    "frontend/src/components/credentials/CopyButton.tsx",
-    "frontend/src/components/credentials/CredentialFilters.tsx",
-    "frontend/src/components/credentials/CredentialFormModal.tsx",
-    "frontend/src/components/credentials/CredentialSearchBar.tsx",
-    "frontend/src/components/credentials/CredentialTable.tsx",
-    "frontend/src/components/credentials/DeleteCredentialConfirm.tsx",
-    "frontend/src/components/credentials/EmptyState.tsx",
-    "frontend/src/components/credentials/PaginationControls.tsx",
-    "frontend/src/components/credentials/PasswordCell.tsx",
-    "frontend/src/components/dashboard/PageTitleBlock.tsx",
-    "frontend/src/components/layout/FixedFooter.tsx",
-    "frontend/src/components/layout/StickyHeader.tsx",
-    "frontend/src/components/layout/ThemeToggle.tsx",
-    "frontend/src/components/print/PrintButton.tsx",
-    "frontend/src/constants/credentialOptions.ts",
-    "frontend/src/hooks/useActor.ts",
-    "frontend/src/hooks/useCredentialFiltering.ts",
-    "frontend/src/hooks/useCredentials.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/hooks/usePagination.ts",
-    "frontend/src/hooks/useTheme.ts",
-    "frontend/src/index.css",
-    "frontend/src/main.tsx",
-    "frontend/src/storage/credentialsStorage.ts",
-    "frontend/src/types/credentials.ts",
-    "frontend/tailwind.config.js",
+    "frontend/src/components/apk/AndroidApkDialog.tsx",
     "project_state.json"
   ]
 }

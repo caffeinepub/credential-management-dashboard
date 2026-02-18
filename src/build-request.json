@@ -1,281 +1,105 @@
 {
   "kind": "build_request",
-  "title": "Credential Management Dashboard (Gov/Enterprise) with searchable, filterable credential table, CRUD, local persistence, dark mode, and print",
+  "title": "Fix APK download by removing placeholder and ensuring reliable APK availability detection",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Build a responsive, mobile-first dashboard web app named “Credential Management Dashboard” (installable on Android via browser as a PWA-style experience) for storing and managing 1000+ credential records, with an ultra-modern Government/Enterprise admin-dashboard layout.",
+      "text": "Stop shipping an invalid placeholder APK at `frontend/public/downloads/app.apk` by removing the placeholder file from deployed assets so `/downloads/app.apk` returns 404 until a real signed universal APK is provided.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "create mobile app in android named as Credential Management Dashboard for storing and managing large volumes of login records (1000+ entries), suitable for Government / Enterprise IT use"
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "App renders correctly on common mobile widths (e.g., 360px) and desktop widths.",
-        "The UI is mobile-first and supports horizontal scrolling where needed for wide tables.",
-        "App name “Credential Management Dashboard” is visible in the UI (e.g., header/title) and used in page metadata."
+        "`frontend/public/downloads/app.apk` is no longer an empty/placeholder file in the deployed frontend assets.",
+        "Requesting `/downloads/app.apk` returns HTTP 404 when no real APK is provided.",
+        "The `frontend/public/downloads/README.md` guidance remains accurate for the 404 default behavior."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Implement the overall visual theme: light background, white content cards, subtle shadows, soft card container styling, smooth UI animations, and modern sans-serif fonts (prefer Inter with fallbacks to Calibri/Segoe UI). Maintain a consistent, professional Government/Enterprise look across all screens and states.",
+      "text": "Ensure the asset canister serves APK files with the correct `Content-Type` and strict no-cache headers for `/downloads/app.apk`, including when the URL includes cache-busting query parameters used by the UI availability checks.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "featuring a clean admin-dashboard layout with light background, white content cards, subtle shadows, smooth animations, and modern fonts (Inter/Calibri/Segoe UI)"
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "Primary layout uses a light page background and white cards with subtle shadows.",
-        "Typography uses Inter if available, otherwise Calibri/Segoe UI fallbacks.",
-        "Interactive elements (menus/modals/toggles) include subtle transitions without jarring motion."
+        "`/downloads/app.apk` is served with `Content-Type: application/vnd.android.package-archive` when present.",
+        "`/downloads/app.apk` is served with `Cache-Control: no-cache, no-store, must-revalidate` (and related no-cache headers) when present.",
+        "Behavior is consistent for requests like `/downloads/app.apk?t=<timestamp>` (no cached placeholder responses after redeploy)."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Create a fixed sticky header containing (1) a left-aligned logo placeholder and (2) centered header text exactly: “Office of the Director General – State Vigilance & Anti-Corruption Bureau, Haryana – Panchkula”. Below/within the main content area, show main title “Credential Management System” and subtitle “User Login Details”.",
+      "text": "Harden frontend APK validation in `frontend/src/hooks/useApkAvailability.ts` so it reliably detects placeholders and error pages even when `Content-Length` is missing or misleading, by performing a small byte-range GET and verifying the APK/ZIP signature (`PK\\x03\\x04`).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "fixed sticky header with logo placeholder on the left and centered text “Office of the Director General – State Vigilance & Anti-Corruption Bureau, Haryana – Panchkula”, main title “Credential Management System” with subtitle “User Login Details”"
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "Header stays visible when scrolling the page.",
-        "Header contains a visible logo placeholder area at left and the exact centered text provided.",
-        "Main title and subtitle are displayed as specified."
+        "When the server responds with HTML/text (e.g., error page), the hook returns `status: 'invalid'` with an explanatory message.",
+        "When the server responds with a very small file (KB range) or a file missing the ZIP signature, the hook returns `status: 'invalid'`.",
+        "When a real APK is present (MB range and ZIP signature present), the hook returns `status: 'available'`.",
+        "When no APK is hosted (404), the hook returns `status: 'missing'`."
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Add a fixed footer that remains visible at the bottom of the viewport displaying exactly: “Confidential – For Official Use Only”.",
+      "text": "Update the Android APK download dialog (`frontend/src/components/apk/AndroidApkDialog.tsx`) so the Download action remains disabled for missing/invalid/unreachable APKs, and user-facing guidance clearly states the hosted file is missing/invalid and must be replaced with a signed universal APK built via Bubblewrap (English text only).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-1"
         ],
         "quotes": [
-          "a fixed footer displaying “Confidential – For Official Use Only”"
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "Footer is fixed/sticky to the bottom and remains visible during scroll.",
-        "Footer text matches exactly, including capitalization and punctuation."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Implement credential data model and CRUD UI: users can add, edit, and delete credential records. Provide a floating “Add Credential” form (modal/drawer) containing fields: Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks. Password input is masked by default and includes an eye toggle to show/hide.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "floating Add Credential form",
-          "when add credentials in the add form Category, Name, Designation, Ranges (shown as badges), Branch (shown as badges), Login ID, Password (masked by default with eye toggle), Mobile, Email/URL, Remarks should be there"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Add form includes all specified fields and can create a new record that appears in the table.",
-        "Edit action opens a form prefilled with the selected row’s values and saves updates back to the list.",
-        "Delete action removes the record after a confirmation step.",
-        "Password field is masked by default and can be toggled visible/hidden via an eye icon."
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Render the credential list as a responsive, scrollable table capable of handling 1000+ rows with good performance. Include a sticky table header, zebra striping, row hover highlight (where hover exists), and horizontal scrolling on small screens. Table columns must be: Sr No, Category, Name, Designation, Ranges, Branch, Login ID, Password, Mobile, Email/URL, Remarks.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "responsive scrollable table supporting 1000+ rows with columns Sr No, Category, Name, Designation, Ranges (shown as badges), Branch (shown as badges), Login ID, Password (masked by default with eye toggle), Mobile, Email/URL, Remarks, sticky table header, zebra striping, row hover highlight, horizontal scrolling on mobile"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Table includes all required columns in the specified order.",
-        "Table header remains visible while scrolling the table area.",
-        "Rows are zebra-striped and highlight on hover on desktop devices.",
-        "On mobile, the table can be scrolled horizontally without breaking layout.",
-        "Performance remains acceptable when rendering and interacting with 1000+ records (e.g., no multi-second UI freezes on common interactions)."
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Display Ranges and Branch values as badge-style pills in both the table and in the add/edit form selection UI. Ranges options must be exactly: SV & ACB Hqrs, Ambala, Faridabad, Gurugram, Hisar, Karnal, Panchkula, Rohtak. Branch options must be exactly: IT Cell, Establishment Branch, Complaint Branch, Secret branch, Account Branch, Addl. Director General of Police, Care Taker, DSO Complaint, Cyber Cell, Diary Dispatch, Director General of Police, Enquiry Branch, Inspector General of Police, Legal Branch, MTO, CRC, Supdt. of Police, Technical Branch, Deputy Inspector General of Police, Sanction Officer, Toll Free, Other.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "Ranges (shown as badges) should be SV & ACB Hqrs, Ambala, Faridabad, Gurugram, Hisar, Karnal, Panchkula, Rohtak",
-          "Branch (shown as badges) should be IT Cell, Establishment Branch, Complaint Branch, Secret branch, Account Branch, Addl. Director General of Police, Care Taker, DSO Complaint, Cyber Cell, Diary Dispatch, Director General of Police, Enquiry Branch, Inspector General of Police, Legal Branch, MTO, CRC, Supdt. of Police, Technical Branch, Deputy Inspector General of Police, Sanction Officer, Toll Free, Other"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Ranges values render as badges in table cells and are selectable in the form.",
-        "Branch values render as badges in table cells and are selectable in the form.",
-        "The selectable options match exactly the provided lists (including capitalization like “Secret branch”)."
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Add global live search (rounded pill input) that filters visible rows by matching across key fields (at minimum: Category, Name, Designation, Ranges, Branch, Login ID, Mobile, Email/URL, Remarks).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "global live search with rounded pill input"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Typing in search input filters the table results immediately without needing a submit action.",
-        "Search affects at least the specified fields and updates pagination accordingly.",
-        "Search input is styled as a rounded pill."
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Add dropdown filters for Branch, Ranges, and Category, each with an adjacent “Clear” control, plus a global “Clear Filters” button that resets search + all filters. Filters must work together (AND behavior) and update the visible rows and pagination.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "branch dropdown filter with clear filters button, Ranges dropdown filter with clear filters button, Category dropdown filter with clear filters button"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Branch, Ranges, and Category filters are available as dropdowns.",
-        "Each filter can be cleared independently, and a global Clear Filters resets all filters and search.",
-        "Applying multiple filters results in the intersection of conditions (AND)."
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "text": "In the table, mask passwords by default and provide per-row password show/hide toggle. Provide copy-to-clipboard buttons for Login ID and Password per row, with clear success feedback in the UI.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "Password (masked by default with eye toggle)",
-          "copy Login ID and Password buttons"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Passwords are masked by default in the table.",
-        "Each row provides a control to toggle that row’s password visibility.",
-        "Copy buttons copy the correct values to clipboard and show a success indication (e.g., toast/snackbar)."
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "text": "Add row-level edit and delete icons/actions in the table, and implement pagination controls suitable for 1000+ entries (page size selector optional). Pagination must work with search and filters.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "row edit/delete icons, pagination"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Each row has visible edit and delete actions.",
-        "Table supports paging through large datasets; changing page updates rows without full page reload.",
-        "Search and filters apply to the paginated dataset and reset to page 1 when criteria changes."
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "text": "Persist credential records locally in the browser using LocalStorage so that records remain after refresh/reopen. Include safe handling for corrupt/invalid saved data (fallback to empty state rather than crashing).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "LocalStorage saving"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Creating/editing/deleting records updates LocalStorage.",
-        "Refreshing the page restores the saved records.",
-        "If LocalStorage data is invalid, the app loads with an empty list and does not crash."
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "text": "Add a dark mode toggle that switches the dashboard theme between light and dark while keeping the same layout and usability (including table readability and badge contrast). Persist the theme preference locally.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "dark mode toggle"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A dark mode toggle exists and switches the UI between light and dark themes.",
-        "Theme selection persists after refresh/reopen.",
-        "Table, badges, header/footer remain readable in dark mode."
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "text": "Implement a print option that prints credential data in a clean, professional print layout. The print output must include the header text, the “Credential Management System” title/subtitle, and a table of the currently visible (filtered/searched) records, formatted for A4/Letter without clipped columns (allow multi-page printing).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "Also add print option"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A Print action is available from the UI.",
-        "Print view includes the specified header text and titles.",
-        "Print output prints the currently visible filtered/searched dataset and paginates across pages when necessary.",
-        "Print stylesheet/layout avoids overlapping content and preserves table legibility."
+        "If APK status is `missing`, `invalid`, or `unreachable`, the \"Download APK\" button is disabled.",
+        "If APK status is `missing`, the dialog clearly communicates that no APK is currently hosted and that this is expected until a signed universal APK is deployed.",
+        "If APK status is `invalid`, the dialog clearly communicates that the hosted file is not a valid APK (likely placeholder/error page) and provides steps to replace it with a signed universal APK built via Bubblewrap.",
+        "All user-facing text in these states is in English."
       ]
     }
   ],
   "constraints": [
-    "Use English for all user-facing text.",
-    "Frontend must be implemented with React + TypeScript, Tailwind CSS, and React Query where appropriate.",
-    "Do not modify files under frontend/src/components/ui or other immutable paths listed in SYSTEM_CONTEXT; compose them instead if needed.",
-    "Backend is single-actor Motoko if any backend functionality is added; do not introduce additional backend services.",
-    "No third-party auth providers; only Internet Identity is allowed if authentication is later added."
+    "Do not modify any files under `frontend/src/components/ui` (read-only Shadcn components).",
+    "Do not edit immutable hook files listed in `SYSTEM_CONTEXT.frontend.immutablePaths` (compose around them if needed).",
+    "Backend must remain single-actor (`backend/main.mo`); only add backend changes if strictly necessary for the APK fix."
   ],
   "nonGoals": [
-    "Building a native Android APK or using Android-specific frameworks (this build delivers a responsive web dashboard that can be installed on Android as a PWA-like experience).",
-    "Implementing server-side storage, multi-user accounts, or role-based access control (not requested).",
-    "Integrating external databases or third-party services."
+    "Generating, signing, or providing a real Android APK binary as part of this change.",
+    "Adding external hosting, third-party download services, or any backend-based file serving for the APK.",
+    "Introducing new authentication providers beyond Internet Identity."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }
